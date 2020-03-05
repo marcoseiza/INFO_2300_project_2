@@ -59,7 +59,28 @@ foreach ($eateries as $eatery) {
   exec_sql_query($eateries_db, "UPDATE eateries SET star_rating = :star_rating WHERE id = :id;", array(":id" => $eatery["id"], ":star_rating" => $star_rating));
 }
 
-$eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries")->fetchAll();
+// $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries")->fetchAll();
+$search = $search_field = "";
+$empty = FALSE;
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $search = $_POST["search"];
+  $search_field = $_POST["search-field"];
+  if (empty($search) && empty($search_field) !== TRUE && $search_field !== "none") {
+    $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries WHERE (type = :search_field)", array(":search_field" => $search_field))->fetchAll();
+  } elseif ($search && empty($search_field) !== TRUE && $search_field !== "none") {
+    $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries WHERE (name = :search) AND (type = :search_field)",
+                                array("search" => $search, ":search_field" => $search_field))->fetchAll();
+  } elseif ($search && $search_field == NULL) {
+    $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries WHERE (name = :search)", array("search" => $search))->fetchAll();
+  } elseif ($search && $search_field == "none") {
+    $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries WHERE (name = :search)", array("search" => $search))->fetchAll();
+  }
+  if (empty($eateries)) {
+    $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries")->fetchAll();
+    $empty = TRUE;
+  }
+}
 
 $eatery_value = 0;
 foreach ($eateries as $eatery) {
@@ -85,12 +106,85 @@ function review($review) {?>
 function eatery_post($eatery) {?>
   <div class="eatery">
       <div class="img">
-        <div></div>
+        <?php
+        if ($eatery["type"] == "restaurant") {?>
+        <svg viewBox="0 0 30 30">
+          <circle cx="15" cy="15" r="15"/>
+          <path fill="white" stroke="white" stroke-width="1.6" d="
+            M 11 23
+            v -16
+            c 2 -1 2 10 0 10
+            z
+            ;"/>
+          <path fill="none" stroke="white" stroke-width="1" d="
+            M 18.5 23
+            v -16
+            v 7
+            h 2
+            v -7
+            m -2 7
+            h -2
+            v -7
+            m 1.7 7
+            v 9
+            m 0.6 -9
+            v 9
+            ;"/>
+        </svg>
+        <?php }
+        else if ($eatery["type"] == "coffee") {?>
+        <svg viewBox="0 0 30 30">
+          <circle cx="15" cy="15" r="15"/>
+          <path fill="none" stroke="white" stroke-width="1.5" d="
+            M 20.3 16
+            a 6 6 0 0 1 -13 0
+            v -6
+            h 13
+            z
+            ;"/>
+          <path fill="none" stroke="white" stroke-width="1.5" d="
+            M 7.3 10
+            h 14
+            a 3 3 0 0 1 0 6
+            h -1
+            v -6
+            ;"/>
+        </svg>
+        <?php }
+        else if ($eatery["type"] == "deli") { ?>
+        <svg viewBox="0 0 30 30">
+          <circle cx="15" cy="15" r="15"/>
+          <path fill="none" stroke="white" stroke-width="1.5" d="
+            M 11 6
+            l 13.5 13.5
+              -1.5 1.5
+              -13.5 -13.5
+              1.5 -1.5
+              -3 3
+              13.5 13.5
+              1.5 -1.5
+              -1.5 1.5
+            h -13.5
+            v -13.5
+            ;"/>
+          <path fill="none" stroke="white" stroke-width="1" d="
+            M 8 22.5
+            m 3 -3
+            l 2 -2
+            M 8 22.5
+            m 5.5 -2.2
+            l 1 -1
+            M 8 22.5
+            m 2.3 -5.5
+            l 1 -1
+            ;"/>
+        </svg>
+        <?php }?>
       </div>
       <div class="name">
         <h1><?php echo htmlspecialchars($eatery["name"])?></h1>
         <div class="type">
-          <h2><span>- </span><?php echo ucfirst(htmlspecialchars($eatery["type"]))?></h2>
+          <h2>- <?php echo ucfirst(htmlspecialchars($eatery["food_type"]))?> / <?php echo ucfirst(htmlspecialchars($eatery["type"]))?></h2>
         </div>
       </div>
       <div class="hours">
@@ -142,10 +236,14 @@ function eatery_post($eatery) {?>
           </div>
           <span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span>
         </div>
-        <span><?php echo htmlspecialchars($eatery["star_rating"])?> Average, out of <?php echo htmlspecialchars($eatery["number_reviews"])?>
+        <span><?php echo htmlspecialchars($eatery["star_rating"])?> Average, out of <span><?php echo htmlspecialchars($eatery["number_reviews"]); ?></span>
+        <?php if ($eatery["reviews"]) { ?>
           <label for="readmore-<?php echo htmlspecialchars($eatery["id"])?>">
             reviews<span></span>
           </label>
+        <?php } else { ?>
+          <span>reviews</span>
+        <?php } ?>
         </span>
       </div>
       <input type="checkbox" name="readmore<?php echo htmlspecialchars($eatery["id"])?>" id="readmore-<?php echo htmlspecialchars($eatery["id"])?>">
@@ -156,9 +254,11 @@ function eatery_post($eatery) {?>
           }
         ?>
       </div>
-      <label for="readmore-<?php echo htmlspecialchars($eatery["id"])?>" class="readmore">
-        <h2></h2>
-      </label>
+      <?php if ($eatery["reviews"]) { ?>
+        <label for="readmore-<?php echo htmlspecialchars($eatery["id"])?>" class="readmore">
+          <h2></h2>
+        </label>
+      <?php } ?>
     </div>
 <?php };
 ?>

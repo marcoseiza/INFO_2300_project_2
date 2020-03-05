@@ -15,19 +15,37 @@ label {
     cursor: pointer;
 }
 
+div.empty {
+    height: 20px;
+    background-color: rgb(241, 241, 241);
+    box-shadow: 0px 2px 25px rgba(0,0,0,0.3),
+                0px 2px 5px rgba(0,0,0,0.5);
+    border-radius: 20px;
+    display: flex;
+    place-content: center;
+    align-items: center;
+    margin-bottom: 3vh;
+    padding: 1em 1.3em;
+}
+
+div.empty span {
+    color: rgb(187, 3, 3);
+    font-size: 1.5em;
+}
+
 div.eatery {
-    width:700px;
+    width: 700px;
     height: auto;
     background-color: rgb(241, 241, 241);
     border-radius: 20px;
     margin-bottom: 3vh;
+    padding-bottom: 10px;
     box-shadow: 0px 2px 25px rgba(0,0,0,0.3),
                 0px 2px 5px rgba(0,0,0,0.5);
-    padding-bottom: 20px;
     position: relative;
     display: grid;
-    grid-template-columns: auto 240px 300px auto;
-    grid-template-rows: 80px 72px 30px 110px auto;
+    grid-template-columns: 1fr 240px 300px 1fr;
+    grid-template-rows: 80px 72px auto 100px auto;
     grid-template-areas:
                 "img name name type "
                 ". hours address . "
@@ -44,11 +62,18 @@ div.eatery div.img {
     justify-content: center;
 }
 
-div.eatery div.img div {
+div.eatery div.img svg {
     height: 40px;
     width: 40px;
-    background-color: rgba(6, 99, 175, 0.8);
-    clip-path: circle(50%);
+}
+
+div.eatery div.img svg circle {
+    fill: rgba(6, 99, 175, 0.8);
+}
+
+div.eatery div.img svg path {
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 div.eatery div.name {
@@ -139,10 +164,10 @@ div.eatery div.star-rating {
     grid-area: star;
     position: relative;
     display: grid;
-    grid-template-columns: 100px auto;
+    grid-template-columns: 90px auto;
     align-items: center;
     gap: 10px;
-    margin-top: 30px;
+    margin-top: 25px;
 }
 
 div.eatery div.star-rating > h2 {
@@ -193,7 +218,7 @@ div.eatery label.readmore {
 }
 
 div.eatery label.readmore h2::after {
-    content: "Read More";
+    content: "Read Reviews";
 }
 
 label:hover h2 {
@@ -207,14 +232,14 @@ input[id|=readmore]:checked ~ label.readmore h2::after {
 input[id|=readmore]:checked ~ div.reviews {
     height: auto;
     overflow: visible;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 
 div.eatery div.reviews {
     grid-area: reviews;
     justify-self: start;
     height: 0;
-    width: 88%;
+    width: 100%;
     margin-bottom: 0;
     overflow: hidden;
 }
