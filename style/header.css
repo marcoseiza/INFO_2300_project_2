@@ -1,0 +1,174 @@
+:root {
+    --background-color: rgb(207, 207, 207);
+    --icon-color: rgb(63, 63, 63);
+}
+
+body {
+    width: 100%;
+    margin: 0;
+    font-size: 10px;
+    background-color: var(--background-color);
+}
+
+header {
+    width: 100%;
+    height: 3em;
+    display: flex;
+    justify-content: center;
+    padding-top: 3em;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+header div.search {
+    width: 80%;
+    height: inherit;
+    display: flex;
+    place-content: center;
+}
+
+header div.search form {
+    width: inherit;
+    height: inherit;
+    display: flex;
+    align-items: flex-end;
+    place-content: center;
+}
+
+header div.search form label.search-field {
+    display: flex;
+    align-items: center;
+    position: relative;
+    background-color: rgb(241, 241, 241);
+    border-radius: 1em;
+    padding: 0.5em 1em;
+    margin-right: 1em;
+    box-shadow: 0px 2px 25px rgba(0,0,0,0.3),
+                0px 2px 5px rgba(0,0,0,0.3);
+}
+
+header div.search form label.search-field select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    background-color: transparent;
+    padding-right: 2em;
+    color: transparent;
+    text-shadow: 0 0 0 var(--icon-color);
+    font-size: 1.8em;
+}
+
+header div.search form label.search-field select:focus {
+    text-shadow: 0 0 0 black;
+}
+
+header div.search form label.search-field select option {
+    text-shadow: 0 0 0 black;
+}
+
+header div.search form label.search-field select:invalid,
+header div.search form label.search-field select option[value=""] {
+  color: #999999;
+}
+
+/* header div.search form label.search-field select option{
+    color: black;
+}
+
+header div.search form label.search-field select option */
+
+header div.search form label.search-field select:focus + svg,
+header div.search form label.search-field select:hover + svg {
+    animation: bounce 1s ease-in-out infinite;
+}
+@keyframes bounce {
+    0% {
+        transform: translate(0, -0.1em);
+    }
+    50% {
+        transform: translate(0, 0.3em);
+    }
+    100% {
+        transform: translate(0, -0.1em);
+    }
+}
+header div.search form label.search-field select:focus + svg path,
+header div.search form label.search-field select:hover + svg path {
+    stroke:rgba(6, 99, 175, 0.8);
+}
+
+header div.search form label.search-field svg {
+    height: 3em;
+    position: absolute;
+    right: 1em;
+    pointer-events: none;
+}
+
+header div.search form label.search-field svg path{
+    stroke-width: 2;
+    stroke: var(--icon-color)
+}
+
+header div.search form input.search-box {
+    font-size: 1.8em;
+    width: 20em;
+    border: none;
+    background-color: transparent;
+    padding: 0.1em 0.5em;
+    border-bottom: 0.1em solid var(--icon-color);
+    color: var(--icon-color);
+    transition: border 200ms ease-in-out;
+}
+
+header div.search form input.search-box:focus,
+header div.search form input.search-box:hover {
+    border-bottom: 0.12em solid black;
+    color: black;
+}
+
+header div.search form input.search-box:focus + label.submit svg path {
+    stroke: rgba(6, 99, 175, 0.8);
+}
+
+header div.search form label.submit {
+    height: 100%;
+    position: relative;
+}
+
+header div.search form label.submit input#submit {
+    position: absolute;
+    right: 0;
+    width: 0;
+    padding: 0;
+    outline: none;
+    background-color: transparent;
+    border: none;
+}
+
+header div.search form label.submit input#submit:focus + svg path,
+header div.search form label.submit:hover svg path {
+    stroke: rgba(6, 99, 175, 0.8);
+    stroke-dasharray: 60.1;
+    stroke-dashoffset: 60.1;
+    animation: draw-svg 0.5s ease-in-out 200ms forwards;
+}
+
+@keyframes draw-svg{
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+header div.search form label.submit svg {
+    height: 3.5em;
+    transform: translate(0, -0.4em) rotateZ(-60deg);
+    position: relative;
+}
+
+header div.search form label.submit svg path {
+    stroke-width: 2;
+    stroke: var(--icon-color);
+    transition: all 200ms ease-in-out;
+}

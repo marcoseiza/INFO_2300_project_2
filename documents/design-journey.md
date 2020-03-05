@@ -81,6 +81,16 @@ What I can use
 > Clearly label the final design.
 
 
+First Sketch:
+![site-sketch](../images/Page_1.jpg)\
+Final Sketch:
+![site-sketch-refined](../images/Page_2.jpg)
+
+Process:\
+I first thought that the eatery card should have the star rating high in the heirarchy of the card. This didn't really work well, becuase (1) I wouldn't be able to expand to see reviews in a comfortable way and (2) it's not the most important thing a user wants to see.\
+A user wants to first see the name, the type of shop, the hours and the address. The rest is extra information that could be useful in picking a place, but is not imperative.\
+I therefore redesigned the first sketch to put the layout in this order of heirarchy. Name and type on top, with an icon that can help identify quicker. Hours, Address, and below them, phone and website. Finally, put the rating and the read more input that expands the card to see reviews.
+
 ## Partials (Milestone 2)
 > If you have any partials, plan them here.
 
@@ -92,31 +102,100 @@ Table: movies
 - field 1: description..., constraints...
 - field...
 
+eateries {
+    id: INTEGER NN PK AI U;
+    type: TEXT NN; //this will be restaurant, coffee-shop, deli, etc..
+    name: TEXT NN;
+    hours: TEXT NN;
+    address: TEXT NN;
+    website: TEXT;
+    phone: TEXT;
+    star_rating: REAL NN;
+    number_reviews: INTEGER NN;
+}
+
+reviews {
+    id: INTEGER NN PK AI U;
+    eatery_id: INTEGER NN; //this will be the id of the eatery
+    name: TEXT; //can be anonymous
+    review: TEXT NN;
+    star_rating: REAL NN;
+}
+
 
 ## Database Query Plan (Milestone 2)
 > Plan your database queries. You may use natural language, pseudocode, or SQL.]
 
 1. All records
 
-    ```
-    TODO
+    ```sqlite3
+        SELECT * FROM eateries;
+        //insert some code that makes :parent_id = "eatery's id";
+        SELECT name, review, star_rating FROM reviews WHERE parent_id = :parent_id;
     ```
 
 2. Search records
-
-    ```
-    TODO
+    ```sqlite3
+        SELECT * FROM eateries WHERE type = :searchField AND name = :seach;
+        //insert some code that makes :parent_id = "eatery's id";
+        SELECT name, review, star_rating FROM reviews WHERE parent_id = :parent_id;
     ```
 
 3. Insert record
+    ```sqlite3
+        //We have the id of the parent eatery = :parent_id
+        //Creating a new review
+        INSERT INTO reviews (parent_id, name, review, star_rating) VALUES (:parent_id, :name, :review, :star_rating)
 
+        //Updating number of reviews in an eatery
+        UPDATE eateries SET number_reviews = number_reviews + 1 WHERE id = :parent_id;
     ```
-    TODO
-    ```
+
 
 
 ## Code Planning (Milestone 2)
 > Plan any PHP code you'll need here.
+
+pseudo:
+
+call db and get eatery info
+
+for every eatery in eateries{
+    $review = sql query WHERE eatery_id = eatery["id"]
+    star_rating = 0;
+    for every review in $reviews {
+        star_rating += 1
+        update eatery database --> number_reviews = number_reviews + 1
+    }
+    if length($reviews) !== 0 {
+        star_rating = star_rating / length($reviews);
+    } else {
+        star_rating = 5;
+    }
+
+    update eatery databse -->  star_rating = $star_rating;
+
+    append reviews at the end of eatery array
+    // eatery = array (info..., ["reviews] => array(review info...))
+}
+
+call db and get eatery info
+
+for every eatery in eateries {
+    append reviews at the end of eatery array
+    // eatery = array (info..., ["reviews] => array(review info...))
+}
+
+function review_card ($review) {
+    html shtuff with $review info...
+}
+
+function eatery_card ($eatery){
+    bunch of html that formats the info from $eatery array...
+    for every review in $eatery["reviews] {
+        function review_card(review)
+    }
+}
 
 
 # Reflection (Final Submission)

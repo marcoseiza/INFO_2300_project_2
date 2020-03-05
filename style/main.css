@@ -1,0 +1,254 @@
+:root {
+    --background-color: rgb(207, 207, 207);
+    --icon-color: rgb(63, 63, 63);
+}
+
+main {
+    width: 100%;
+    margin-top: 5vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+label {
+    cursor: pointer;
+}
+
+div.eatery {
+    width:700px;
+    height: auto;
+    background-color: rgb(241, 241, 241);
+    border-radius: 20px;
+    margin-bottom: 3vh;
+    box-shadow: 0px 2px 25px rgba(0,0,0,0.3),
+                0px 2px 5px rgba(0,0,0,0.5);
+    padding-bottom: 20px;
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 240px 300px auto;
+    grid-template-rows: 80px 72px 30px 110px auto;
+    grid-template-areas:
+                "img name name type "
+                ". hours address . "
+                ". phone website . "
+                ". star star . "
+                ". reviews reviews ."
+                ;
+}
+
+div.eatery div.img {
+    grid-area: img;
+    display: grid;
+    align-content: end;
+    justify-content: center;
+}
+
+div.eatery div.img div {
+    height: 40px;
+    width: 40px;
+    background-color: rgba(6, 99, 175, 0.8);
+    clip-path: circle(50%);
+}
+
+div.eatery div.name {
+    grid-area: name;
+    color: var(--icon-color);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: end;
+    gap: 20px;
+}
+
+div.eatery div.name h2 {
+    margin-bottom: 8px;
+}
+
+div.eatery h1 {
+    font-size: 30px;
+    margin: 0;
+}
+
+div.eatery h2 {
+    color: var(--icon-color);
+    font-size: 15px;
+    margin: 0;
+}
+
+div.eatery p, div.eatery span, div.eatery a {
+    margin: 0;
+    font-size: 15px;
+}
+
+div.eatery div.hours {
+    grid-area: hours;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 5px;
+    padding-top: 22px;
+}
+
+div.eatery div.hours h2 {
+    align-self: end;
+    grid-column: 1;
+    margin: 0;
+}
+
+div.eatery div.hours p {
+    align-self: end;
+    grid-column: 2;
+}
+
+div.eatery div.hours span {
+    align-self: start;
+    grid-column: 2;
+}
+div.eatery div.hours span.open {
+    color: rgb(23, 99, 23);
+}
+div.eatery div.hours span.closed {
+    color: rgb(187, 3, 3);
+}
+
+div.eatery div.address {
+    grid-area: address;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 10px;
+}
+div.eatery div.website {
+    grid-area: website;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 10px;
+}
+div.eatery div.phone {
+    grid-area: phone;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 10px;
+}
+
+div.eatery div.star-rating {
+    grid-area: star;
+    position: relative;
+    display: grid;
+    grid-template-columns: 100px auto;
+    align-items: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+div.eatery div.star-rating > h2 {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+div.eatery div.star-rating div.rating-container {
+    font-size: 15px;
+    color: rgba(134, 133, 133, 0.3);
+    width: 5em;
+    justify-self: center;
+    position: relative;
+}
+
+div.eatery div.star-rating div.rating-container span {
+    font-size: inherit;
+}
+
+div.eatery div.star-rating div.rating-container div.rating{
+    color: rgb(250, 220, 49);
+    position: absolute;
+    overflow: hidden;
+    --rating-percent: 0%;
+    width: var(--rating-percent);
+}
+
+div.eatery div.star-rating span label:hover {
+    color: rgba(6, 99, 175, 0.8);
+}
+
+div.eatery div.star-rating span label:hover span::after{
+    content: "...";
+}
+
+main input[id|=readmore] {
+    display: none;
+}
+
+div.eatery label.readmore {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    display: grid;
+    align-content: end;
+    justify-content: center;
+}
+
+div.eatery label.readmore h2::after {
+    content: "Read More";
+}
+
+label:hover h2 {
+    color: rgba(6, 99, 175, 0.8);
+}
+
+input[id|=readmore]:checked ~ label.readmore h2::after {
+    content: "Collapse";
+}
+
+input[id|=readmore]:checked ~ div.reviews {
+    height: auto;
+    overflow: visible;
+    margin-bottom: 25px;
+}
+
+div.eatery div.reviews {
+    grid-area: reviews;
+    justify-self: start;
+    height: 0;
+    width: 88%;
+    margin-bottom: 0;
+    overflow: hidden;
+}
+
+div.eatery div.reviews div.review {
+    margin: 1em 0;
+    padding: 1em;
+    border-radius: 20px;
+    box-shadow:
+                0px 2px 5px rgba(0,0,0,0.5);
+}
+
+div.eatery div.reviews div.review div.rating-container {
+    font-size: 15px;
+    color: rgba(134, 133, 133, 0.3);
+    width: 5em;
+    justify-self: center;
+    position: relative;
+}
+
+div.eatery div.reviews div.review div.rating-container span {
+    font-size: inherit;
+}
+
+div.eatery div.reviews div.review div.rating-container div.rating{
+    color: rgb(250, 220, 49);
+    position: absolute;
+    overflow: hidden;
+    --rating-percent: 0%;
+    width: var(--rating-percent);
+}
+
+input[id~=readmore]:not(:checked) ~ div.reviews,
+input[id~=readmore]:not(:checked) ~ div.reviews * {
+    margin: 0;
+    padding: 0;
+}
