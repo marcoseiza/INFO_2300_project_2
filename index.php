@@ -55,7 +55,7 @@
       <div class="empty"><span>There are no results with that name and/or type</span></div>
     <?php }
     foreach ($eateries as $eatery) {
-      eatery_post($eatery, $answers = array("id" => $id, "checked" => $checked, "name" => $name, "star" => $star_rating, "comment" => $comment));}
+      eatery_post($eatery, $answers = array("id" => $id, "checked" => $checked, "name" => $name, "star" => $answer_star_rating, "comment" => $comment));}
     ?>
   </main>
 </body>

@@ -79,8 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if (isset($_POST["review-submit"])) {
     $id = substr($_POST["review-submit"], -1);
     $name = $_POST["review-name-" . $id];
-    $star_rating = "";
-    $comment = "";
+    $answer_star_rating = $_POST["review-star-rating-" . $id];
+    $comment = $_POST["review-comment-" . $id];
     $checked = "";
 
     if (empty($name)) {
@@ -89,22 +89,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       $name = str_replace("'", "\'", $name);
     }
 
-    if (empty($_POST["review-star-rating-" . $id])) {
+    if (empty($answer_star_rating)) {
       $checked = "checked";
-    } else {
-      $star_rating = $_POST["review-star-rating-" . $id];
     }
 
-    if (empty($_POST["review-comment-" . $id])) {
+    if (empty($comment)) {
       $checked = "checked";
-    } else {
-      $comment = $_POST["review-comment-" . $id];
     }
 
     if (empty($checked)) {
       exec_sql_query($eateries_db,
       "INSERT INTO reviews (eatery_id, name, review, star_rating) VALUES (:id, :name, :review, :star_rating)",
-      array(":id" => $id, ":name" => $name, ":review" => $comment, ":star_rating" => $star_rating));
+      array(":id" => $id, ":name" => $name, ":review" => $comment, ":star_rating" => $answer_star_rating));
     }
   }
 
@@ -152,7 +148,7 @@ function review($review) {?>
 <?php };
 
 function eatery_post($eatery, $answers) {?>
-  <div class="eatery">
+  <div class="eatery" id="eatery-<?php echo htmlspecialchars($eatery["id"])?>">
       <div class="img">
         <?php
         if ($eatery["type"] == "restaurant") {?>
@@ -287,7 +283,7 @@ function eatery_post($eatery, $answers) {?>
           <span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span>
         </div>
         <div class="rating-desc">
-          <?php echo htmlspecialchars($eatery["star_rating"])?> Average, out of <span><?php echo htmlspecialchars($eatery["number_reviews"]); ?></span>
+          <?php echo htmlspecialchars(round($eatery["star_rating"], 1))?> Average, out of <span><?php echo htmlspecialchars($eatery["number_reviews"]); ?></span>
           <?php if ($eatery["reviews"]) { ?>
             <label for="readmore-<?php echo htmlspecialchars($eatery["id"])?>">
               reviews<span></span>
@@ -296,20 +292,20 @@ function eatery_post($eatery, $answers) {?>
             <span>reviews</span>
           <?php } ?>
         </div>
-        <div class="review-action">
+      </div>
+      <div class="review-action">
           <label for="review-action-<?php echo htmlspecialchars($eatery["id"])?>" class="review-action">
             <h2>Write a Review</h2>
           </label>
         </div>
-      </div>
       <div class="reviews">
-        <?php
-          foreach ($eatery["reviews"] as $review) {
-            review($review);
-          }
-        ?>
-        <form id="review-editor-<?php echo htmlspecialchars($eatery["id"])?>" method="post" action="index.php">
+        <form id="review-editor-<?php echo htmlspecialchars($eatery["id"])?>" method="post" action="index.php#eatery-<?php echo htmlspecialchars($eatery["id"])?>">
           <h2>Write A Review!</h2>
+          <div class="review-action">
+            <label for="review-action-<?php echo htmlspecialchars($eatery["id"])?>" class="review-action">
+              <h2>&#10006;</h2>
+            </label>
+          </div>
           <div class="review-name">
             <label for="review-name-<?php echo htmlspecialchars($eatery["id"])?>">Name:</label>
             <input type="text" name="review-name-<?php echo htmlspecialchars($eatery["id"])?>" id="review-name-<?php echo htmlspecialchars($eatery["id"])?>" value="<?php if ($answers["id"] == $eatery["id"]) {echo htmlspecialchars($answers["name"]);}?>">
@@ -333,13 +329,16 @@ function eatery_post($eatery, $answers) {?>
             <label for="review-comment">What do you think?</label>
             <textarea name="review-comment-<?php echo htmlspecialchars($eatery["id"])?>" id="review-comment"><?php if ($answers["id"] == $eatery["id"]) {echo htmlspecialchars($answers["comment"]);}?></textarea>
           </div>
-          <input type="submit" form="review-editor-<?php echo htmlspecialchars($eatery["id"])?>" name="review-submit" id="review-submit" value="Post-<?php echo htmlspecialchars($eatery["id"])?>">
-        </form>
-        <div class="review-action">
-          <label for="review-action-<?php echo htmlspecialchars($eatery["id"])?>" class="review-action">
-            <h2>Write a Review</h2>
+          <label for="review-submit-<?php echo htmlspecialchars($eatery["id"])?>" class="review-submit">
+            Submit<span>&#8594;</span>
+            <input type="submit" form="review-editor-<?php echo htmlspecialchars($eatery["id"])?>" name="review-submit" id="review-submit-<?php echo htmlspecialchars($eatery["id"])?>" value="Post-<?php echo htmlspecialchars($eatery["id"])?>">
           </label>
-        </div>
+        </form>
+        <?php
+          foreach ($eatery["reviews"] as $review) {
+            review($review);
+          }
+        ?>
       </div>
       <?php if ($eatery["reviews"]) { ?>
         <label for="readmore-<?php echo htmlspecialchars($eatery["id"])?>" class="readmore">
