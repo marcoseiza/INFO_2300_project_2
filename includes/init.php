@@ -43,6 +43,75 @@ $eateries_db = open_sqlite_db("secure/eateries.sqlite");
 // $reviews = exec_sql_query($eateries_db, "SELECT * FROM reviews WHERE (eatery_id = :id)", )->fetchAll();
 $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries")->fetchAll();
 
+$search = $search_field = "";
+$empty = FALSE;
+$checked = "";
+$name = $comment = "";
+$star_rating = "0";
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  if (isset($_POST['search-submit'])) {
+    $search = $_POST["search"];
+    $search_field = $_POST["search-field"];
+    if (!empty($search_field) && $search_field !== "none") {
+      $search_sql = "SELECT * FROM eateries WHERE " . $search_field . " like '%'||:search||'%'";
+      $params = array(":search" => $search);
+    } elseif ($search_field == "none") {
+      $search_sql = "SELECT * FROM eateries WHERE
+      name like '%'||:search||'%' or
+      hours_open like '%'||:search||'%' or
+      hours_close like '%'||:search||'%' or
+      address like '%'||:search||'%' or
+      website like '%'||:search||'%' or
+      phone like '%'||:search||'%' or
+      star_rating like '%'||:search||'%'";
+      $params = array(":search" => $search);
+    } elseif (empty($search_field)) {
+      var_dump($search_field, $_POST);
+      $search_sql = "SELECT * FROM eateries";
+      $params = array();
+    }
+    $eateries = exec_sql_query($eateries_db, $search_sql, $params)->fetchAll();
+  } else {
+    $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries")->fetchAll();
+  }
+
+  if (isset($_POST["review-submit"])) {
+    $id = substr($_POST["review-submit"], -1);
+    $name = $_POST["review-name-" . $id];
+    $star_rating = "";
+    $comment = "";
+    $checked = "";
+
+    if (empty($name)) {
+      $name = "Anonymous";
+    } elseif (preg_match("/^[a-z ,.'-]+$/i", $name)) {
+      $name = str_replace("'", "\'", $name);
+    }
+
+    if (empty($_POST["review-star-rating-" . $id])) {
+      $checked = "checked";
+    } else {
+      $star_rating = $_POST["review-star-rating-" . $id];
+    }
+
+    if (empty($_POST["review-comment-" . $id])) {
+      $checked = "checked";
+    } else {
+      $comment = $_POST["review-comment-" . $id];
+    }
+
+    if (empty($checked)) {
+      exec_sql_query($eateries_db,
+      "INSERT INTO reviews (eatery_id, name, review, star_rating) VALUES (:id, :name, :review, :star_rating)",
+      array(":id" => $id, ":name" => $name, ":review" => $comment, ":star_rating" => $star_rating));
+    }
+  }
+
+} else {
+  $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries")->fetchAll();
+}
+
 foreach ($eateries as $eatery) {
   $reviews = exec_sql_query($eateries_db, "SELECT * FROM reviews WHERE (eatery_id = :id)", array(":id" => $eatery["id"]))->fetchAll();
   exec_sql_query($eateries_db, "UPDATE eateries SET number_reviews = :number_reviews WHERE id = :id;",
@@ -59,28 +128,7 @@ foreach ($eateries as $eatery) {
   exec_sql_query($eateries_db, "UPDATE eateries SET star_rating = :star_rating WHERE id = :id;", array(":id" => $eatery["id"], ":star_rating" => $star_rating));
 }
 
-// $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries")->fetchAll();
-$search = $search_field = "";
-$empty = FALSE;
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  $search = $_POST["search"];
-  $search_field = $_POST["search-field"];
-  if (empty($search) && empty($search_field) !== TRUE && $search_field !== "none") {
-    $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries WHERE (type = :search_field)", array(":search_field" => $search_field))->fetchAll();
-  } elseif ($search && empty($search_field) !== TRUE && $search_field !== "none") {
-    $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries WHERE (name = :search) AND (type = :search_field)",
-                                array("search" => $search, ":search_field" => $search_field))->fetchAll();
-  } elseif ($search && $search_field == NULL) {
-    $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries WHERE (name = :search)", array("search" => $search))->fetchAll();
-  } elseif ($search && $search_field == "none") {
-    $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries WHERE (name = :search)", array("search" => $search))->fetchAll();
-  }
-  if (empty($eateries)) {
-    $eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries")->fetchAll();
-    $empty = TRUE;
-  }
-}
+$eateries = exec_sql_query($eateries_db, "SELECT * FROM eateries")->fetchAll();
 
 $eatery_value = 0;
 foreach ($eateries as $eatery) {
@@ -103,7 +151,7 @@ function review($review) {?>
     </div>
 <?php };
 
-function eatery_post($eatery) {?>
+function eatery_post($eatery, $answers) {?>
   <div class="eatery">
       <div class="img">
         <?php
@@ -228,6 +276,8 @@ function eatery_post($eatery) {?>
           <a><?php echo htmlspecialchars($eatery["phone"])?></a>
         </div>
       <?php }?>
+      <input type="checkbox" name="readmore-<?php echo htmlspecialchars($eatery["id"])?>" id="readmore-<?php echo htmlspecialchars($eatery["id"])?>">
+      <input type="checkbox" name="review-action-<?php echo htmlspecialchars($eatery["id"])?>" id="review-action-<?php echo htmlspecialchars($eatery["id"])?>" <?php if ($answers["id"] == $eatery["id"]) {echo $answers["checked"];}?>>
       <div class="star-rating">
         <h2>Rating:</h2>
         <div class="rating-container">
@@ -236,23 +286,60 @@ function eatery_post($eatery) {?>
           </div>
           <span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span><span>&#9733;</span>
         </div>
-        <span><?php echo htmlspecialchars($eatery["star_rating"])?> Average, out of <span><?php echo htmlspecialchars($eatery["number_reviews"]); ?></span>
-        <?php if ($eatery["reviews"]) { ?>
-          <label for="readmore-<?php echo htmlspecialchars($eatery["id"])?>">
-            reviews<span></span>
+        <div class="rating-desc">
+          <?php echo htmlspecialchars($eatery["star_rating"])?> Average, out of <span><?php echo htmlspecialchars($eatery["number_reviews"]); ?></span>
+          <?php if ($eatery["reviews"]) { ?>
+            <label for="readmore-<?php echo htmlspecialchars($eatery["id"])?>">
+              reviews<span></span>
+            </label>
+          <?php } else { ?>
+            <span>reviews</span>
+          <?php } ?>
+        </div>
+        <div class="review-action">
+          <label for="review-action-<?php echo htmlspecialchars($eatery["id"])?>" class="review-action">
+            <h2>Write a Review</h2>
           </label>
-        <?php } else { ?>
-          <span>reviews</span>
-        <?php } ?>
-        </span>
+        </div>
       </div>
-      <input type="checkbox" name="readmore<?php echo htmlspecialchars($eatery["id"])?>" id="readmore-<?php echo htmlspecialchars($eatery["id"])?>">
       <div class="reviews">
         <?php
           foreach ($eatery["reviews"] as $review) {
             review($review);
           }
         ?>
+        <form id="review-editor-<?php echo htmlspecialchars($eatery["id"])?>" method="post" action="index.php">
+          <h2>Write A Review!</h2>
+          <div class="review-name">
+            <label for="review-name-<?php echo htmlspecialchars($eatery["id"])?>">Name:</label>
+            <input type="text" name="review-name-<?php echo htmlspecialchars($eatery["id"])?>" id="review-name-<?php echo htmlspecialchars($eatery["id"])?>" value="<?php if ($answers["id"] == $eatery["id"]) {echo htmlspecialchars($answers["name"]);}?>">
+          </div>
+          <div class="review-star-rating">
+            <input type="radio" name="review-star-rating-<?php echo htmlspecialchars($eatery["id"])?>" id="rating-5-<?php echo htmlspecialchars($eatery["id"])?>" value="5" <?php if ($answers["id"] == $eatery["id"] && $answers["star"] == "5") {echo 'checked=\"checked\"';}?>>
+            <label for="rating-5-<?php echo htmlspecialchars($eatery["id"])?>" class="rating-5"><span>&#9733;</span></label>
+            <input type="radio" name="review-star-rating-<?php echo htmlspecialchars($eatery["id"])?>" id="rating-4-<?php echo htmlspecialchars($eatery["id"])?>" value="4" <?php if ($answers["id"] == $eatery["id"] && $answers["star"] == "4") {echo 'checked=\"checked\"';}?>>
+            <label for="rating-4-<?php echo htmlspecialchars($eatery["id"])?>" class="rating-4"><span>&#9733;</span></label>
+            <input type="radio" name="review-star-rating-<?php echo htmlspecialchars($eatery["id"])?>" id="rating-3-<?php echo htmlspecialchars($eatery["id"])?>" value="3" <?php if ($answers["id"] == $eatery["id"] && $answers["star"] == "3") {echo 'checked=\"checked\"';}?>>
+            <label for="rating-3-<?php echo htmlspecialchars($eatery["id"])?>" class="rating-3"><span>&#9733;</span></label>
+            <input type="radio" name="review-star-rating-<?php echo htmlspecialchars($eatery["id"])?>" id="rating-2-<?php echo htmlspecialchars($eatery["id"])?>" value="2" <?php if ($answers["id"] == $eatery["id"] && $answers["star"] == "2") {echo 'checked=\"checked\"';}?>>
+            <label for="rating-2-<?php echo htmlspecialchars($eatery["id"])?>" class="rating-2"><span>&#9733;</span></label>
+            <input type="radio" name="review-star-rating-<?php echo htmlspecialchars($eatery["id"])?>" id="rating-1-<?php echo htmlspecialchars($eatery["id"])?>" value="1" <?php if ($answers["id"] == $eatery["id"] && $answers["star"] == "1") {echo 'checked=\"checked\"';}?>>
+            <label for="rating-1-<?php echo htmlspecialchars($eatery["id"])?>" class="rating-1"><span>&#9733;</span></label>
+            <input type="radio" name="review-star-rating-<?php echo htmlspecialchars($eatery["id"])?>" id="rating-0-<?php echo htmlspecialchars($eatery["id"])?>" value="0" <?php if ($answers["id"] == $eatery["id"] && $answers["star"] == "0") {echo 'checked=\"checked\"';}?>>
+            <label for="rating-0-<?php echo htmlspecialchars($eatery["id"])?>" class="rating-0"><span></span></label>
+            <label for="review-star-rating" class="title">Star Rating:</label>
+          </div>
+          <div class="review-comment">
+            <label for="review-comment">What do you think?</label>
+            <textarea name="review-comment-<?php echo htmlspecialchars($eatery["id"])?>" id="review-comment"><?php if ($answers["id"] == $eatery["id"]) {echo htmlspecialchars($answers["comment"]);}?></textarea>
+          </div>
+          <input type="submit" form="review-editor-<?php echo htmlspecialchars($eatery["id"])?>" name="review-submit" id="review-submit" value="Post-<?php echo htmlspecialchars($eatery["id"])?>">
+        </form>
+        <div class="review-action">
+          <label for="review-action-<?php echo htmlspecialchars($eatery["id"])?>" class="review-action">
+            <h2>Write a Review</h2>
+          </label>
+        </div>
       </div>
       <?php if ($eatery["reviews"]) { ?>
         <label for="readmore-<?php echo htmlspecialchars($eatery["id"])?>" class="readmore">

@@ -15,10 +15,12 @@ header {
     height: 3em;
     display: flex;
     justify-content: center;
-    padding-top: 3em;
+    padding: 3em 0;
     position: sticky;
     top: 0;
     z-index: 999;
+    background-image: linear-gradient(rgb(207, 207, 207), rgb(207, 207, 207, 0));
+
 }
 
 header div.search {
@@ -29,7 +31,7 @@ header div.search {
 }
 
 header div.search form {
-    width: inherit;
+    width: 100%;
     height: inherit;
     display: flex;
     align-items: flex-end;
@@ -113,7 +115,7 @@ header div.search form label.search-field svg path{
 
 header div.search form input.search-box {
     font-size: 1.8em;
-    width: 20em;
+    width: 21.5em;
     border: none;
     background-color: transparent;
     padding: 0.1em 0.5em;
@@ -124,7 +126,7 @@ header div.search form input.search-box {
 
 header div.search form input.search-box:focus,
 header div.search form input.search-box:hover {
-    border-bottom: 0.12em solid black;
+    border-bottom: 0.12em solid rgba(6, 99, 175, 0.8);
     color: black;
 }
 
