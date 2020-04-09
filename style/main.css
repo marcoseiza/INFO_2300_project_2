@@ -11,8 +11,32 @@ main {
     align-items: center;
 }
 
-label {
+* {
+    border: none;
+}
+
+label,
+label * {
     cursor: pointer;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+form * {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+form input {
+    user-select: initial;
+    -moz-user-select: initial;
+    -webkit-user-select: initial;
+}
+
+span.required {
+    color: rgb(187, 3, 3);
 }
 
 div.empty {
@@ -20,12 +44,13 @@ div.empty {
     background-color: rgb(241, 241, 241);
     box-shadow: 0px 2px 25px rgba(0,0,0,0.3),
                 0px 2px 5px rgba(0,0,0,0.5);
-    border-radius: 20px;
+    border-radius: 2em;
     display: flex;
     place-content: center;
     align-items: center;
     margin-bottom: 3vh;
     padding: 1em 1.3em;
+    white-space: pre-wrap;
 }
 
 div.empty span {
@@ -33,60 +58,54 @@ div.empty span {
     font-size: 1.5em;
 }
 
+.anchor {
+  display: block;
+  width: 620px;
+  height: 230px;
+  margin-top: -230px;
+}
+
 div.eatery {
-    width: 700px;
+    width: auto;
     height: auto;
     background-color: rgb(241, 241, 241);
-    border-radius: 20px;
+    border-radius: 2em;
     margin-bottom: 3vh;
     padding-bottom: 1.5em;
     box-shadow: 0px 2px 25px rgba(0,0,0,0.3),
                 0px 2px 5px rgba(0,0,0,0.5);
     position: relative;
     display: grid;
-    grid-template-columns: 1fr 240px 300px 1fr;
-    grid-template-rows: 60px 72px auto 100px auto;
+    grid-template-columns: 8em 24em 30em;
+    grid-template-rows: 6em 3em 5.5em auto 5em;
     grid-template-areas:
-                "img name name type "
-                ". hours address . "
-                ". phone website . "
-                ". star star . "
-                ". reviews reviews ."
+                "img name name"
+                ". type type"
+                ". hours address"
+                ". phone website"
+                ". star star"
                 ;
 }
 
-div.eatery div.img {
+div.img {
     grid-area: img;
     display: grid;
     align-content: end;
     justify-content: center;
 }
 
-div.eatery div.img svg {
+div.img svg {
     height: 40px;
     width: 40px;
 }
 
-div.eatery div.img svg circle {
-    fill: rgba(6, 99, 175, 0.8);
+div.img circle {
+    fill: rgb(52,138,188);
 }
 
-div.eatery div.img svg path {
+div.img path {
     stroke-linecap: round;
     stroke-linejoin: round;
-}
-
-div.eatery div.name {
-    grid-area: name;
-    color: var(--icon-color);
-    display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: end;
-    gap: 20px;
-}
-
-div.eatery div.name h2 {
-    margin-bottom: 8px;
 }
 
 div.eatery h1 {
@@ -105,79 +124,120 @@ div.eatery p, div.eatery span, div.eatery a {
     font-size: 15px;
 }
 
-div.eatery div.hours {
+div.eatery p {color: var(--icon-color);}
+
+div.name {
+    grid-area: name;
+    color: var(--icon-color);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: end;
+    gap: 20px;
+}
+
+div.type {
+    grid-area: type;
+    display: flex;
+    align-items: center;
+}
+
+div.type h2 {
+    white-space: pre;
+    color: rgb(129, 128, 128)
+}
+
+div.type h2 span {
+    color: rgb(23, 99, 23);
+}
+
+div.hours {
     grid-area: hours;
     display: grid;
     grid-template-columns: auto 1fr;
     grid-template-rows: 1fr 1fr;
     align-items: center;
-    column-gap: 10px;
-    row-gap: 5px;
-    padding-top: 22px;
+    column-gap: 1em;
+    row-gap: 0.5em;
 }
 
-div.eatery div.hours h2 {
+div.hours h2 {
     align-self: end;
     grid-column: 1;
     margin: 0;
 }
 
-div.eatery div.hours p {
+div.hours p {
     align-self: end;
     grid-column: 2;
 }
 
-div.eatery div.hours span {
+div.hours span {
     align-self: start;
     grid-column: 2;
 }
-div.eatery div.hours span.open {
+span.open {
     color: rgb(23, 99, 23);
 }
-div.eatery div.hours span.closed {
+span.closed {
     color: rgb(187, 3, 3);
 }
 
-div.eatery div.address {
+div.address {
+    /* padding-bottom: 4.5px; */
     grid-area: address;
     display: grid;
     grid-template-columns: auto 1fr;
-    align-items: center;
-    gap: 10px;
+    grid-template-rows: 1fr 1fr;
+    align-items: start;
+    column-gap: 1em;
+    row-gap: 0.5em;
 }
-div.eatery div.website {
+
+div.address h2 {
+    grid-column: 1;
+    align-self: end;
+}
+
+div.address a {
+    grid-area: 1 / 2 / -1 / -1;
+    padding-right: 2em;
+    align-self: center;
+    line-height: 1.5em;
+}
+
+div.website {
     grid-area: website;
     display: grid;
     grid-template-columns: auto 1fr;
     align-items: center;
-    gap: 10px;
+    gap: 1em;
 }
-div.eatery div.phone {
+
+div.website a {
+    padding-right: 2em;
+}
+
+div.phone {
     grid-area: phone;
     display: grid;
     grid-template-columns: auto 1fr;
     align-items: center;
-    gap: 10px;
+    gap: 1em;
 }
 
-div.eatery div.star-rating {
+div.star-rating {
     grid-area: star;
     position: relative;
-    display: grid;
-    grid-template-columns: 90px 1fr 1fr;
+    display: flex;
     align-items: center;
-    justify-items: start;
-    gap: 10px;
-    margin-top: 25px;
+    margin-top: 1.5em;
 }
 
-div.eatery div.star-rating > h2 {
-    position: absolute;
-    top: 0;
-    left: 0;
+div.star-rating > h2 {
+  margin-right: 0.5em;
 }
 
-div.eatery div.star-rating div.rating-container {
+div.rating-container {
     font-size: 15px;
     color: rgba(134, 133, 133, 0.3);
     width: 5em;
@@ -185,13 +245,13 @@ div.eatery div.star-rating div.rating-container {
     position: relative;
 }
 
-div.eatery div.star-rating div.rating-desc {
+div.rating-desc {
+    margin-left: 0.5em;
     font-size: 1.5em;
     color: var(--icon-color);
-    display: inline-block;
 }
 
-div.eatery div.star-rating div.rating-container div.rating{
+div.rating{
     color: rgb(250, 220, 49);
     position: absolute;
     overflow: hidden;
@@ -199,297 +259,56 @@ div.eatery div.star-rating div.rating-container div.rating{
     width: var(--rating-percent);
 }
 
-div.eatery div.star-rating div.rating-desc label:hover {
-    color: rgba(6, 99, 175, 0.8);
+div.star-rating form {
+  margin-left: 2em;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
 }
 
-div.eatery div.star-rating div.rating-desc label:hover span::after{
-    content: "...";
+div.star-rating form h2 {
+  color: rgba(0, 0, 0, 0.363);
+  font-weight: 300;
+  margin-right: 0.5em;
 }
 
-div.review-action {
-    background-color: rgba(6, 99, 175, 0.8);
-    display: inline-block;
-    border-radius: 20px;
-    box-shadow: 0px 2px 5px rgba(0,0,0,0.5);
-    grid-area: star;
-    position: absolute;
-    right: 9em;
-    top: 4.2em;
+div.star-rating form input {
+  display: none;
 }
 
-div.review-action:hover {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+div.review-star-rating {
+  display: flex;
+  flex-direction: row-reverse;
 }
 
-div.review-action label h2 {
-    padding: 0.8em;
-    color: rgb(241, 241, 241);
+div.review-star-rating label span::after {
+  content: "\2606";
+  color: rgb(52,138,188);
 }
 
-main input[id|=readmore],
-main input[id|=review-action] {
-    display: none;
+div.review-star-rating label:hover span::after {
+  content: "\2605";
 }
 
-div.eatery label.readmore {
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    display: grid;
-    align-content: end;
-    justify-content: center;
+div.review-star-rating label:hover span::after,
+div.review-star-rating label:hover ~ label span::after,
+div.review-star-rating input:checked ~ label span::after {
+  content: "\2605";
 }
 
-div.eatery label.readmore h2::after {
-    content: "Read Reviews";
-}
-
-label:hover h2 {
-    color: rgba(6, 99, 175, 0.8);
-}
-
-input[id|=readmore]:checked ~ label.readmore h2::after {
-    content: "Collapse";
-}
-
-input[id|=readmore]:checked ~ div.reviews {
-    height: auto;
-    overflow: visible;
-    margin-bottom: 3em;
-}
-
-input[id|=readmore]:checked ~ div.reviews div.review {
-    height: auto;
-    overflow: visible;
-}
-
-input[id|=readmore]:checked ~ div.reviews form {
-    height: 0;
-    overflow: hidden;
-}
-
-input[id|=readmore]:checked ~ div.star-rating div.review-action {
-    grid-column: 2 / 4;
-}
-
-input[id|=review-action]:checked ~ div.review-action {
-    height: 0;
-    overflow: hidden;
-}
-
-input[id|=review-action]:checked ~ div.reviews {
-    height: auto;
-    overflow: visible;
-    margin-bottom: 3em;
-}
-
-
-input[id|=review-action]:checked ~ div.reviews form {
-    height: auto;
-    overflow: visible;
-}
-
-
-
-input[id|=readmore]:not(:checked)
-+ input[id|=review-action]:checked ~ div.reviews div.review,
-input[id|=review-action]:checked ~ div.star-rating div.review-action,
-input[id|=review-action]:not(:checked) ~ div.reviews form {
-    height: 0;
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-}
-
-
-div.eatery div.reviews {
-    grid-area: reviews;
-    justify-self: start;
-    height: 0;
-    width: 100%;
-    margin-bottom: 0;
-    overflow: hidden;
-}
-
-div.eatery div.reviews div.review {
-    margin: 1em 0;
-    padding: 2em;
-    border-radius: 20px;
-    box-shadow: 0px 2px 5px rgba(0,0,0,0.5);
-}
-
-div.eatery div.reviews div.review div.rating-container {
-    font-size: 15px;
-    color: rgba(134, 133, 133, 0.3);
-    width: 5em;
-    justify-self: center;
-    position: relative;
-}
-
-div.eatery div.reviews div.review div.rating-container span {
-    font-size: inherit;
-}
-
-div.eatery div.reviews div.review div.rating-container div.rating{
-    color: rgb(250, 220, 49);
-    position: absolute;
-    overflow: hidden;
-    --rating-percent: 0%;
-    width: var(--rating-percent);
-}
-
-div.eatery div.reviews form {
-    height: auto;
-    margin-bottom: 2em;
-    display: grid;
-    position: relative;
-    grid-template-columns: 1fr 1fr;
-    row-gap: 1em;
-    padding: 2em;
-    background-color: rgb(241, 241, 241);
-    border-radius: 20px;
-    box-shadow: 0px 2px 5px rgba(0,0,0,0.5);
-}
-
-div.eatery div.reviews form div.review-action {
-    position: absolute;
-    top: 1.5em;
-    right: 1.5em;
-    height: 3em;
-    width: 3em;
-    border-radius: 50%;
-    grid-area: auto;
-    transform: initial;
-}
-
-div.eatery div.reviews form div.review-action label {
-    display: grid;
-    place-items: center;
-    position: absolute;
-    height: 3em;
-    width: 3em;
-}
-
-div.eatery div.reviews form div.review-action h2 {
-    margin: 0;
-    padding: 0;
-    color: rgb(241, 241, 241);
-}
-
-div.eatery div.reviews form h2 {
-    margin-bottom: 0.5em;
-    color: rgba(6, 99, 175, 0.8);
-}
-
-div.eatery div.reviews form div.review-name {
-    grid-column: 1;
-    display: flex;
-    align-items: center;
-}
-
-div.eatery div.reviews form div.review-name label {
-    font-size: 1.5em;
-}
-
-div.eatery div.reviews form div.review-name input {
-    align-self: flex-start;
-    border: none;
-    background-color: transparent;
-    border-bottom: 1.5px solid var(--icon-color);
-    margin-left: 0.5em;
-    padding: 0em 0.5em;
-    font-size: 1.2em;
-}
-
-div.eatery div.reviews form div.review-name input:focus {
-    border-bottom: 1.5px solid rgba(6, 99, 175, 0.8);
-}
-
-div.eatery div.reviews form div.review-star-rating {
-    grid-column: 2;
-    display: flex;
-    flex-direction: row-reverse;
-    justify-content: flex-end;
-    align-items: center;
-}
-
-div.eatery div.reviews form div.review-star-rating label.title {
-    font-size: 1.5em;
-}
-
-div.eatery div.reviews form div.review-star-rating input {
-    display: none;
-}
-
-div.eatery div.reviews form div.review-star-rating label[class|="rating"] {
-    color: rgba(134, 133, 133, 0.3);
-}
-
-div.eatery div.reviews form div.review-star-rating label.rating-0 span {
-    display: block;
-    width: 1em;
-    height: 1em;
-}
-
-div.eatery div.reviews form div.review-star-rating label[class|="rating"]:hover,
-div.eatery div.reviews form div.review-star-rating label[class|="rating"]:hover ~ label[class|="rating"] {
-    color: rgb(250, 220, 49);
-}
-
-div.eatery div.reviews form div.review-star-rating input:checked ~ label[class|="rating"] {
-    color: rgb(250, 220, 49);
-}
-
-div.eatery div.reviews form div.review-comment {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-}
-
-div.eatery div.reviews form div.review-comment label {
-    font-size: 1.5em;
-}
-
-div.eatery div.reviews form div.review-comment textarea {
-    height: 10em;
-    background-color: rgb(241, 241, 241);
-    border: 1.5px solid var(--icon-color);
-    font-family: inherit;
-    padding: 0.5em;
-    font-size: 1.2em;
-}
-
-div.eatery div.reviews form div.review-comment textarea:focus {
-    border: 1.5px solid rgba(6, 99, 175, 0.8);
-}
-
-div.eatery div.reviews form label.review-submit {
-    font-size: 1.5em;
-    grid-column: 1;
-    height: 2em;
-    width: 6em;
-    color: rgb(241, 241, 241);
-    background-color: rgba(6, 99, 175, 0.8);
-    display: flex;
-    align-items: center;
-    border-radius: 2em;
-    padding: 0 0.75em;
-    position: relative;
-    box-shadow: 0px 2px 5px rgba(0,0,0,0.5);
-}
-
-div.eatery div.reviews form label.review-submit:hover {
-    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
-}
-
-div.eatery div.reviews form label.review-submit span {
-    position: absolute;
-    right: 0.75em;
-    font-size: 1.2em;
-    margin-bottom: 0.15em
-}
-
-div.eatery div.reviews form label.review-submit input[id|="review-submit"] {
-    display: none;
+div.star-rating form label.review-submit {
+  margin-left: 0.5em;
+  font-size: 1.5em;
+  font-weight: 700;
+  grid-column: 1;
+  height: 2em;
+  color: rgb(241, 241, 241);
+  background-color: rgb(52,138,188);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 2.0em;
+  padding: 0 0.75em;
+  position: relative;
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.5);
 }

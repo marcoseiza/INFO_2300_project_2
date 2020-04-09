@@ -1,0 +1,275 @@
+@import "style/main.css";
+
+input#eatery-add {
+    display: none;
+}
+
+input#eatery-add:checked + div.eatery-add {
+    width: 620px;
+    height: auto;
+    border-radius: 2em;
+    box-shadow: 0px 2px 25px rgba(0,0,0,0.3),
+                0px 2px 5px rgba(0,0,0,0.5);
+}
+
+input#eatery-add:checked + div.eatery-add form * {
+    overflow: visible;
+}
+
+input#eatery-add:checked + div.eatery-add > label {
+    top: 1em;
+    right: 1em;
+    transform: unset;
+    transform: scale(70%);
+    -webkit-transform: scale(0.7, 0.7);
+    transition: top 200ms ease-in, right 200ms ease-out 200ms, transform 200ms ease-out 200ms;
+}
+
+input#eatery-add:checked + div.eatery-add > label svg {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    transition: all 500ms ease-in-out 200ms;
+}
+
+div.eatery-add {
+    width: 5em;
+    height: 5em;
+    background-color: rgb(241, 241, 241);
+    border-radius: 50%;
+    position: relative;
+    margin-bottom: 3em;
+    box-shadow: 0px 0px 0px rgba(0,0,0,0.3),
+                0px 0px 0px rgba(0,0,0,0.5);
+}
+
+div.eatery-add > label {
+    width: 5em;
+    height: 5em;
+    background-color: rgb(52,138,188);
+    display: grid;
+    border-radius: 50%;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.5);
+    position: absolute;
+    top: 0;
+    right: 50%;
+    transform: translate(50%, 0);
+}
+
+div.eatery-add > label:hover {
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+}
+
+div.eatery-add > label svg {
+    stroke: rgb(241, 241, 241);
+}
+
+input#eatery-add:checked + div.eatery-add form {
+    height: auto;
+    overflow: visible;
+}
+
+div.eatery-add form {
+    height: 0;
+    overflow: hidden;
+    padding: 2em;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: auto;
+    row-gap: 1.5em;
+}
+
+div.eatery-add form * {
+    overflow: hidden;
+}
+
+div.eatery-add form * {
+    padding: 0;
+    margin: 0;
+}
+
+div.eatery-add form span.required-message {
+    overflow: hidden;
+}
+
+div.eatery-add form > * {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+div.eatery-hours {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+}
+
+div.eatery-hours-open,
+div.eatery-hours-close {
+    overflow: hidden !important;
+    width: 12em;
+}
+
+div.eatery-hours-open input,
+div.eatery-hours-close input {
+    width: 8em;
+}
+
+div.eatery-add form h2 {
+    margin-bottom: 0.5em;
+    color: rgb(52,138,188);
+    grid-column: 1 / -1;
+    font-size: 2em;
+}
+
+div.eatery-add form h3 {
+    margin-bottom: 0.5em;
+    color: rgb(129, 128, 128);
+    font-size: 1.5em;
+}
+
+div.eatery-add form label {
+    font-size: 1.5em;
+    white-space: pre-wrap;
+}
+
+div.eatery-add form label span.example {
+    font-size: 0.8em;
+    font-weight: 500;
+    color: rgb(63, 63, 63);
+}
+
+div.eatery-add form input {
+    outline: none;
+    border: none;
+    background-color: transparent;
+    border-bottom: 1.5px solid var(--icon-color);
+    margin: 0.5em 1em 0.5em 0;
+    padding: 0em 0.5em;
+    font-size: 1.2em;
+}
+
+div.eatery-add form input:hover,
+div.eatery-add form input:focus {
+    border-bottom: 1.5px solid rgb(52,138,188);
+}
+
+div.eatery-add form div.eatery-price {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    position: relative;
+}
+
+div.eatery-add form div.eatery-price-range {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: flex-end;
+    position: relative;
+    margin-bottom: 0.5em;
+}
+
+div.eatery-add form div.eatery-price-range input {
+    display: none;
+}
+
+div.eatery-add form div.eatery-price-range input:last-of-type {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    display: block;
+    position: absolute;
+    border: none;
+    bottom: -0.45em;
+    width: 6.5em;
+    height: 1.4em;
+    pointer-events: none;
+}
+
+div.eatery-add form div.eatery-price-range input:checked ~ label{
+    color: rgb(23, 99, 23);
+}
+
+div.eatery-add form div.eatery-price-range label {
+    padding-right: 0.5em;
+    color: rgba(134, 133, 133, 0.3);
+}
+
+div.eatery-add form div.eatery-price-range label:hover,
+div.eatery-add form div.eatery-price-range label:hover ~ label {
+    color: rgb(23, 99, 23);
+}
+
+div.eatery-add form div.eatery-price h2 {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 400;
+    color: black;
+    position: absolute;
+    top: 0;
+}
+
+div.eatery-add form div.eatery-address div {
+    margin-right: 1.2em;
+    display: grid;
+    grid-template-columns: 40% 25% 15% 20%;
+}
+
+div.eatery-add form div.eatery-address div input {
+    width: auto;
+    margin: 0; padding: 0;
+    margin-bottom: 0.5em;
+}
+
+div.eatery-add form div.eatery-address div input:not(:last-of-type) { margin-right: 0.5em;}
+
+div.eatery-add form label[for="eatery-submit"] {
+    font-size: 1.5em;
+    font-weight: 700;
+    grid-column: 1;
+    height: 2em;
+    width: 6em;
+    color: rgb(241, 241, 241);
+    background-color: rgb(52,138,188);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 2.0em;
+    padding: 0 0.75em;
+    position: relative;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.5);
+}
+
+div.eatery-add form label[for="eatery-submit"]:hover {
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+}
+
+div.eatery-add form label[for="eatery-submit"] span {
+    position: absolute;
+    right: 0.75em;
+    font-size: 1.2em;
+    margin-bottom: 0.15em;
+    color: rgb(241, 241, 241);
+}
+
+div.eatery-add form label[for="eatery-submit"] input {
+    display: none;
+}
+
+input#eatery-add:checked + div.eatery-add form span.required-message {
+    height: auto;
+    width: auto;
+}
+
+div.eatery-add form span.required-message {
+    display: block;
+    position: absolute;
+    height: 0;
+    width: 0;
+    right: 2em;
+    bottom: 2.2em;
+    font-size: 1.2em;
+}
+
+div.eatery-add form input.invalid {
+    border-bottom: 1.5px solid rgb(187, 3, 3);
+}
